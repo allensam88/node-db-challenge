@@ -3,9 +3,21 @@ const Projects = require('./project-model.js');
 const router = express.Router();
 
 // fetch all projects
+// router.get('/projects', (req, res) => {
+//     Projects.getProjects()
+//         .then(projects => {
+//             res.status(200).json(projects);
+//         })
+//         .catch(err => {
+//             res.status(500).json({ message: 'Failed to get projects.' });
+//         });
+// });
+
+//trying to change boolean values when fetching all projects
 router.get('/projects', (req, res) => {
     Projects.getProjects()
         .then(projects => {
+            projects.forEach(project => project.completed ? project.completed = true : project.completed = false)
             res.status(200).json(projects);
         })
         .catch(err => {
@@ -13,32 +25,13 @@ router.get('/projects', (req, res) => {
         });
 });
 
-// trying to change boolean values when fetching all projects
-// router.get('/projects', (req, res) => {
-//     Projects.getProjects()
-//         .then(projects => {        
-//                 let booleanProjects = projects.map(project => {
-//                 if (project.completed === 1) {
-//                     project.completed = true
-//                     res.status(200).json(booleanProjects);
-//                 } else {
-//                     project.completed = false
-//                     res.status(200).json(booleanProjects);
-//                 }
-//                 })        
-//         })
-//         .catch(err => {
-//             res.status(500).json({ message: 'Failed to get projects.' });
-//         });
-// });
-
 // fetch single project by id
 router.get('/projects/:id', (req, res) => {
     const { id } = req.params;
     Projects.getProjectById(id)
         .then(project => {
             if (project) {
-                if (project.completed === 1) {
+                if (project.completed) {
                     project.completed = true
                     res.status(200).json(project);
                 } else {
@@ -109,6 +102,7 @@ router.post('/resources', (req, res) => {
 router.get('/tasks', (req, res) => {
     Projects.getTasks()
         .then(tasks => {
+            tasks.forEach(task => task.completed ? task.completed = true : task.completed = false)
             res.status(200).json(tasks);
         })
         .catch(err => {
@@ -122,7 +116,13 @@ router.get('/tasks/:id', (req, res) => {
     Projects.getTaskById(id)
         .then(task => {
             if (task) {
-                res.status(200).json(task);
+                if (task.completed) {
+                    task.completed = true
+                    res.status(200).json(task);
+                } else {
+                    task.completed = false
+                    res.status(200).json(task);
+                }
             } else {
                 res.status(404).json({ message: 'Could not find task with given id.' })
             }

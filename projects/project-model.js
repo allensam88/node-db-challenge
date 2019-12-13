@@ -14,7 +14,7 @@ module.exports = {
 
 // fetch all projects
 function getProjects() {
-    return db('projects');
+    return db('projects')
 }
 
 // fetch single project
@@ -59,12 +59,12 @@ function addResource(resource) {
 // fetch all tasks
 function getTasks() {
     return db('projects')
-    .join('tasks', 'projects.id', 'tasks.project_id')
-    .select('projects.name as project_name', 
-        'projects.description as project_description', 
-        'tasks.description as task', 
-        'tasks.notes as notes', 
-        'tasks.completed')
+        .join('tasks', 'projects.id', 'tasks.project_id')
+        .select('projects.name as project_name',
+            'projects.description as project_description',
+            'tasks.description as task',
+            'tasks.notes as notes',
+            'tasks.completed')
 }
 
 // fetch task by id
