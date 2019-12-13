@@ -3,10 +3,10 @@ const db = require('../data/db-config.js');
 module.exports = {
     getProjects,
     getProjectById,
-    addProject,
-    getProjectResources,
     getProjectTasks,
-    getComplexProject
+    getProjectResources,
+    getComplexProject,
+    addProject
 };
 
 // fetch all projects
@@ -21,14 +21,14 @@ function getProjectById(id) {
         .first();
 }
 
-// add a project
-function addProject(project) {
-    return db('projects')
-        .insert(project, 'id')
-        .then(ids => {
-            const [id] = ids;
-            return getProjectById(id);
-        });
+// fetch project tasks
+function getProjectTasks(id) {
+    return db('tasks')
+    .select(
+    'tasks.description as task',
+    'tasks.notes as notes',
+    'tasks.completed')
+    .where('project_id', id)
 }
 
 // fetch project resources
@@ -38,15 +38,9 @@ function getProjectResources(id) {
         .where('project_resources.project_id', id)
 }
 
-// fetch project tasks
-function getProjectTasks(id) {
-    return db('tasks')
-        .where('project_id', id)
-}
-
 // fetch a complex project with all tasks and resources
 function getComplexProject(id) {
-    const promises = [getProjectById(id), getProjectTasks(id), getProjectTasks(id)]
+    const promises = [getProjectById(id), getProjectTasks(id), getProjectResources(id)]
     return Promise.all(promises)
         .then(function (results) {
             let [project, tasks, resources] = results;
@@ -56,6 +50,16 @@ function getComplexProject(id) {
                 return project
             }
         })
+}
+
+// add a project
+function addProject(project) {
+    return db('projects')
+        .insert(project, 'id')
+        .then(ids => {
+            const [id] = ids;
+            return getProjectById(id);
+        });
 }
 
 // function updateRecipe(changes, id) {

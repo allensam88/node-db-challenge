@@ -3,7 +3,7 @@ const Projects = require('./project-model.js');
 const router = express.Router();
 
 // fetch all projects
-router.get('/projects', (req, res) => {
+router.get('/', (req, res) => {
     Projects.getProjects()
         .then(projects => {
             projects.forEach(project => project.completed ? project.completed = true : project.completed = false)
@@ -15,7 +15,7 @@ router.get('/projects', (req, res) => {
 });
 
 // fetch single project by id
-router.get('/projects/:id', (req, res) => {
+router.get('/:id', (req, res) => {
     const { id } = req.params;
     Projects.getProjectById(id)
         .then(project => {
@@ -36,6 +36,42 @@ router.get('/projects/:id', (req, res) => {
         });
 });
 
+// fetch project tasks
+router.get('/:id/tasks', (req, res) => {
+    const { id } = req.params;
+    Projects.getProjectTasks(id)
+        .then(proj_tasks => {
+            res.status(200).json(proj_tasks);
+        })
+        .catch(err => {
+            res.status(500).json({ message: 'Failed to get project tasks.' });
+        });
+})
+
+// fetch project resources
+router.get('/:id/resources', (req, res) => {
+    const { id } = req.params;
+    Projects.getProjectResources(id)
+        .then(proj_resources => {
+            res.status(200).json(proj_resources);
+        })
+        .catch(err => {
+            res.status(500).json({ message: 'Failed to get project resources.' });
+        });
+})
+
+// fetch complex project with tasks and resources
+router.get('/:id/complex', (req, res) => {
+    const { id } = req.params;
+    Projects.getComplexProject(id)
+        .then(project => {
+            res.status(200).json(project)
+        })
+        .catch(err => {
+            res.status(500).json({ message: 'Failed to get project.' });
+        });
+})
+
 // add a project
 router.post('/projects', (req, res) => {
     const projectData = req.body;
@@ -47,18 +83,6 @@ router.post('/projects', (req, res) => {
             res.status(500).json({ message: 'Failed to create new project.' });
         });
 });
-
-// fetch complex project with tasks and resources
-router.get('/projects/:id/complex', (req, res) => {
-    const { id } = req.params;
-    Projects.getComplexProject(id)
-        .then(project => {
-            res.status(200).json(project)
-        })
-        .catch(err => {
-            res.status(500).json({ message: 'Failed to get project.' });
-        });
-})
 
 // router.put('/:id', (req, res) => {
 //     const { id } = req.params;
