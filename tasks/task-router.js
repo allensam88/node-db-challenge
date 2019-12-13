@@ -1,54 +1,54 @@
 const express = require('express');
-const Projects = require('./project-model.js');
+const Tasks = require('./task-model.js');
 const router = express.Router();
 
-// fetch all projects
-router.get('/projects', (req, res) => {
-    Projects.getProjects()
-        .then(projects => {
-            projects.forEach(project => project.completed ? project.completed = true : project.completed = false)
-            res.status(200).json(projects);
+// fetch all tasks with project name and description
+router.get('/', (req, res) => {
+    Tasks.getTasks()
+        .then(tasks => {
+            tasks.forEach(task => task.completed ? task.completed = true : task.completed = false)
+            res.status(200).json(tasks);
         })
         .catch(err => {
-            res.status(500).json({ message: 'Failed to get projects.' });
+            res.status(500).json({ message: 'Failed to get tasks.' });
         });
-});
+})
 
-// fetch single project by id
-router.get('/projects/:id', (req, res) => {
+// fetch single task by id
+router.get('/:id', (req, res) => {
     const { id } = req.params;
-    Projects.getProjectById(id)
-        .then(project => {
-            if (project) {
-                if (project.completed) {
-                    project.completed = true
-                    res.status(200).json(project);
+    Tasks.getTaskById(id)
+        .then(task => {
+            if (task) {
+                if (task.completed) {
+                    task.completed = true
+                    res.status(200).json(task);
                 } else {
-                    project.completed = false
-                    res.status(200).json(project);
+                    task.completed = false
+                    res.status(200).json(task);
                 }
             } else {
-                res.status(404).json({ message: 'Could not find project with given id.' })
+                res.status(404).json({ message: 'Could not find task with given id.' })
             }
         })
         .catch(err => {
-            res.status(500).json({ message: 'Failed to get project.' });
+            res.status(500).json({ message: 'Failed to get task.' });
         });
 });
 
-// add a project
-router.post('/projects', (req, res) => {
-    const projectData = req.body;
-    Projects.addProject(projectData)
-        .then(project => {
-            res.status(201).json(project);
+// add a task
+router.post('/', (req, res) => {
+    const { id } = req.params;
+    const taskData = req.body;
+    Tasks.addTask(taskData, id)
+        .then(task => {
+            res.status(201).json(task);
         })
         .catch(err => {
-            res.status(500).json({ message: 'Failed to create new project.' });
+            res.status(500).json({ message: 'Failed to create new task.' });
         });
-});
+})
 
-// fetch complex project with tasks and resources
 router.get('/projects/:id/complex', (req, res) => {
     const { id } = req.params;
     Projects.getComplexProject(id)

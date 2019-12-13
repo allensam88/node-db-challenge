@@ -4,12 +4,9 @@ module.exports = {
     getProjects,
     getProjectById,
     addProject,
-    getResources,
-    getResourceById,
-    addResource,
-    getTasks,
-    getTaskById,
-    addTask
+    getProjectResources,
+    getProjectTasks,
+    getComplexProject
 };
 
 // fetch all projects
@@ -34,54 +31,31 @@ function addProject(project) {
         });
 }
 
-// fetch all resources
-function getResources() {
-    return db('resources');
+// fetch project resources
+function getProjectResources(id) {
+    return db('project_resources')
+        .join('resources', 'project_resources.resource_id', 'resources.id' )
+        .where('project_resources.project_id', id)
 }
 
-// fetch single resource
-function getResourceById(id) {
-    return db('resources')
-        .where({ id })
-        .first();
-}
-
-// add a resource
-function addResource(resource) {
-    return db('resources')
-        .insert(resource, 'id')
-        .then(ids => {
-            const [id] = ids;
-            return getResourceById(id);
-        });
-}
-
-// fetch all tasks
-function getTasks() {
-    return db('projects')
-        .join('tasks', 'projects.id', 'tasks.project_id')
-        .select('projects.name as project_name',
-            'projects.description as project_description',
-            'tasks.description as task',
-            'tasks.notes as notes',
-            'tasks.completed')
-}
-
-// fetch task by id
-function getTaskById(id) {
+// fetch project tasks
+function getProjectTasks(id) {
     return db('tasks')
-        .where({ id })
-        .first();
+        .where('project_id', id)
 }
 
-// add a task
-function addTask(task) {
-    return db('tasks')
-        .insert(task, 'id')
-        .then(ids => {
-            const [id] = ids;
-            return getTaskById(id);
-        });
+// fetch a complex project with all tasks and resources
+function getComplexProject(id) {
+    const promises = [getProjectById(id), getProjectTasks(id), getProjectTasks(id)]
+    return Promise.all(promises)
+        .then(function (results) {
+            let [project, tasks, resources] = results;
+            if (project) {
+                project.tasks = tasks;
+                project.resources = resources;
+                return project
+            }
+        })
 }
 
 // function updateRecipe(changes, id) {
