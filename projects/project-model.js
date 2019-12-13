@@ -5,6 +5,8 @@ module.exports = {
     getProjectById,
     addProject,
     getResources,
+    getResourceById,
+    addResource,
     getTasks
 };
 
@@ -35,9 +37,32 @@ function getResources() {
     return db('resources');
 }
 
+// fetch single resource
+function getResourceById(id) {
+    return db('resources')
+        .where({ id })
+        .first();
+}
+
+// add a resource
+function addResource(resource) {
+    return db('resources')
+        .insert(resource, 'id')
+        .then(ids => {
+            const [id] = ids;
+            return getResourceById(id);
+        });
+}
+
 // fetch all tasks
 function getTasks() {
-    return db('tasks');
+    return db('projects')
+    .join('tasks', 'projects.id', 'tasks.project_id')
+    .select('projects.name as project_name', 
+        'projects.description as project_description', 
+        'tasks.description as task', 
+        'tasks.notes as notes', 
+        'tasks.completed')
 }
 
 // function getRecipeById(id) {

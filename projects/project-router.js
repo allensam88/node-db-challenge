@@ -52,6 +52,34 @@ router.get('/resources', (req, res) => {
         });
 })
 
+// fetch single resource by id
+router.get('/resources/:id', (req, res) => {
+    const { id } = req.params;
+    Projects.getResourceById(id)
+        .then(resource => {
+            if (resource) {
+                res.status(200).json(resource);
+            } else {
+                res.status(404).json({ message: 'Could not find resource with given id.' })
+            }
+        })
+        .catch(err => {
+            res.status(500).json({ message: 'Failed to get project.' });
+        });
+});
+
+// add a resource
+router.post('/resources', (req, res) => {
+    const resourceData = req.body;
+    Projects.addResource(resourceData)
+        .then(resource => {
+            res.status(201).json(resource);
+        })
+        .catch(err => {
+            res.status(500).json({ message: 'Failed to create new resource.' });
+        });
+});
+
 // fetch all tasks
 router.get('/tasks', (req, res) => {
     Projects.getTasks()
@@ -63,7 +91,7 @@ router.get('/tasks', (req, res) => {
     });
 })
 
-
+// add a task
 
 // router.get('/:id/shoppingList', (req, res) => {
 //     const { id } = req.params;
