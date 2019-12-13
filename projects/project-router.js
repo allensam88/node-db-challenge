@@ -13,13 +13,38 @@ router.get('/projects', (req, res) => {
         });
 });
 
+// trying to change boolean values when fetching all projects
+// router.get('/projects', (req, res) => {
+//     Projects.getProjects()
+//         .then(projects => {        
+//                 let booleanProjects = projects.map(project => {
+//                 if (project.completed === 1) {
+//                     project.completed = true
+//                     res.status(200).json(booleanProjects);
+//                 } else {
+//                     project.completed = false
+//                     res.status(200).json(booleanProjects);
+//                 }
+//                 })        
+//         })
+//         .catch(err => {
+//             res.status(500).json({ message: 'Failed to get projects.' });
+//         });
+// });
+
 // fetch single project by id
 router.get('/projects/:id', (req, res) => {
     const { id } = req.params;
     Projects.getProjectById(id)
         .then(project => {
             if (project) {
-                res.status(200).json(project);
+                if (project.completed === 1) {
+                    project.completed = true
+                    res.status(200).json(project);
+                } else {
+                    project.completed = false
+                    res.status(200).json(project);
+                }
             } else {
                 res.status(404).json({ message: 'Could not find project with given id.' })
             }
@@ -64,7 +89,7 @@ router.get('/resources/:id', (req, res) => {
             }
         })
         .catch(err => {
-            res.status(500).json({ message: 'Failed to get project.' });
+            res.status(500).json({ message: 'Failed to get resource.' });
         });
 });
 
@@ -80,68 +105,45 @@ router.post('/resources', (req, res) => {
         });
 });
 
-// fetch all tasks
+// fetch all tasks with project name and description
 router.get('/tasks', (req, res) => {
     Projects.getTasks()
-    .then(tasks => {
-        res.status(200).json(tasks);
-    })
-    .catch(err => {
-        res.status(500).json({ message: 'Failed to get tasks.' });
-    });
+        .then(tasks => {
+            res.status(200).json(tasks);
+        })
+        .catch(err => {
+            res.status(500).json({ message: 'Failed to get tasks.' });
+        });
 })
 
+// fetch single task by id
+router.get('/tasks/:id', (req, res) => {
+    const { id } = req.params;
+    Projects.getTaskById(id)
+        .then(task => {
+            if (task) {
+                res.status(200).json(task);
+            } else {
+                res.status(404).json({ message: 'Could not find task with given id.' })
+            }
+        })
+        .catch(err => {
+            res.status(500).json({ message: 'Failed to get task.' });
+        });
+});
+
 // add a task
-
-// router.get('/:id/shoppingList', (req, res) => {
-//     const { id } = req.params;
-//     Recipes.getShoppingList(id)
-//         .then(list => {
-//             if (list.length) {
-//                 res.status(200).json(list);
-//             } else {
-//                 res.status(404).json({ message: 'Could not find recipe shopping list.' })
-//             }
-//         })
-//         .catch(err => {
-//             res.status(500).json({ message: 'Failed to get shopping list.' });
-//         });
-// });
-
-// router.get('/:id/instructions', (req, res) => {
-//     const { id} = req.params;
-//     Recipes.getInstructions(id)
-//         .then(instructions => {
-//             if (instructions.length) {
-//                 res.status(200).json(instructions);
-//             } else {
-//                 res.status(404).json({ message: 'Could not find instructions.' })
-//             }
-//         })
-//         .catch(err => {
-//             res.status(500).json({ message: 'Failed to get instructions.' });
-//         });
-// })
-
-// router.post('/:id/steps', (req, res) => {
-//     const stepData = req.body;
-//     const { id } = req.params;
-
-//     Schemes.findById(id)
-//         .then(scheme => {
-//             if (scheme) {
-//                 Schemes.addStep(stepData, id)
-//                     .then(step => {
-//                         res.status(201).json(step);
-//                     })
-//             } else {
-//                 res.status(404).json({ message: 'Could not find scheme with given id.' })
-//             }
-//         })
-//         .catch(err => {
-//             res.status(500).json({ message: 'Failed to create new step' });
-//         });
-// });
+router.post('/tasks', (req, res) => {
+    const { id } = req.params;
+    const taskData = req.body;
+    Projects.addTask(taskData, id)
+        .then(task => {
+            res.status(201).json(task);
+        })
+        .catch(err => {
+            res.status(500).json({ message: 'Failed to create new task.' });
+        });
+})
 
 // router.put('/:id', (req, res) => {
 //     const { id } = req.params;
