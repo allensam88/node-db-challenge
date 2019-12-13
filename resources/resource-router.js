@@ -41,38 +41,38 @@ router.post('/', (req, res) => {
         });
 });
 
-// router.put('/:id', (req, res) => {
-//     const { id } = req.params;
-//     const changes = req.body;
-//     Recipes.getRecipeById(id)
-//         .then(recipe => {
-//             if (recipe) {
-//                 Recipes.updateRecipe(changes, id)
-//                     .then(updatedRecipe => {
-//                         res.status(202).json(updatedRecipe);
-//                     });
-//             } else {
-//                 res.status(404).json({ message: 'Could not find recipe with given id.' });
-//             }
-//         })
-//         .catch(err => {
-//             res.status(500).json({ message: 'Failed to update recipe.' });
-//         });
-// });
+router.put('/:id', (req, res) => {
+    const { id } = req.params;
+    const changes = req.body;
+    Resources.getResourceById(id)
+        .then(resource => {
+            if (resource) {
+                Resources.updateResource(changes, id)
+                    .then(updatedResource => {
+                        res.status(202).json(updatedResource);
+                    });
+            } else {
+                res.status(404).json({ message: 'Could not find resource with given id.' });
+            }
+        })
+        .catch(err => {
+            res.status(500).json({ message: 'Failed to update resource.' });
+        });
+});
 
-// router.delete('/:id', (req, res) => {
-//     const { id } = req.params;
-//     Recipes.removeRecipe(id)
-//         .then(deleted => {
-//             if (deleted) {
-//                 res.status(200).json({ removed: deleted });
-//             } else {
-//                 res.status(404).json({ message: 'Could not find recipe with given id.' });
-//             }
-//         })
-//         .catch(err => {
-//             res.status(500).json({ message: 'Failed to delete recipe.' });
-//         });
-// });
+router.delete('/:id', (req, res) => {
+    const { id } = req.params;
+    Resources.removeResource(id)
+        .then(deleted => {
+            if (deleted) {
+                res.status(200).json({ removed: deleted });
+            } else {
+                res.status(404).json({ message: 'Could not find resource with given id.' });
+            }
+        })
+        .catch(err => {
+            res.status(500).json({ message: 'Failed to delete resource.' });
+        });
+});
 
 module.exports = router;

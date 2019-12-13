@@ -6,7 +6,9 @@ module.exports = {
     getProjectTasks,
     getProjectResources,
     getComplexProject,
-    addProject
+    addProject,
+    updateProject,
+    removeProject
 };
 
 // fetch all projects
@@ -62,21 +64,23 @@ function addProject(project) {
         });
 }
 
-// function updateRecipe(changes, id) {
-//     return db('recipes')
-//         .where({ id })
-//         .update(changes)
-//         .then(count => {
-//             return getRecipeById(id);
-//         });
-// }
+// update a project
+function updateProject(changes, id) {
+    return db('projects')
+        .where({ id })
+        .update(changes)
+        .then(count => {
+            return getProjectById(id);
+        });
+}
 
-// function removeRecipe(id) {
-//     const deletedRecipe = getRecipeById(id).then(item => item);
-//     return db('recipes')
-//         .where({ id })
-//         .del()
-//         .then(count => {
-//             return deletedRecipe
-//         });
-// }
+// delete a project
+function removeProject(id) {
+    const deletedProject = getProjectById(id).then(item => item);
+    return db('projects')
+        .where({ id })
+        .del()
+        .then(count => {
+            return deletedProject
+        });
+}

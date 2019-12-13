@@ -49,49 +49,39 @@ router.post('/', (req, res) => {
         });
 })
 
-router.get('/projects/:id/complex', (req, res) => {
+// PUT
+router.put('/:id', (req, res) => {
     const { id } = req.params;
-    Projects.getComplexProject(id)
-        .then(project => {
-            res.status(200).json(project)
+    const changes = req.body;
+    Tasks.getTaskById(id)
+        .then(task => {
+            if (task) {
+                Tasks.updateTask(changes, id)
+                    .then(updatedTask => {
+                        res.status(202).json(updatedTask);
+                    });
+            } else {
+                res.status(404).json({ message: 'Could not find task with given id.' });
+            }
         })
         .catch(err => {
-            res.status(500).json({ message: 'Failed to get project.' });
+            res.status(500).json({ message: 'Failed to update task.' });
         });
-})
+});
 
-// router.put('/:id', (req, res) => {
-//     const { id } = req.params;
-//     const changes = req.body;
-//     Recipes.getRecipeById(id)
-//         .then(recipe => {
-//             if (recipe) {
-//                 Recipes.updateRecipe(changes, id)
-//                     .then(updatedRecipe => {
-//                         res.status(202).json(updatedRecipe);
-//                     });
-//             } else {
-//                 res.status(404).json({ message: 'Could not find recipe with given id.' });
-//             }
-//         })
-//         .catch(err => {
-//             res.status(500).json({ message: 'Failed to update recipe.' });
-//         });
-// });
-
-// router.delete('/:id', (req, res) => {
-//     const { id } = req.params;
-//     Recipes.removeRecipe(id)
-//         .then(deleted => {
-//             if (deleted) {
-//                 res.status(200).json({ removed: deleted });
-//             } else {
-//                 res.status(404).json({ message: 'Could not find recipe with given id.' });
-//             }
-//         })
-//         .catch(err => {
-//             res.status(500).json({ message: 'Failed to delete recipe.' });
-//         });
-// });
+router.delete('/:id', (req, res) => {
+    const { id } = req.params;
+    Tasks.removeTask(id)
+        .then(deleted => {
+            if (deleted) {
+                res.status(200).json({ removed: deleted });
+            } else {
+                res.status(404).json({ message: 'Could not find task with given id.' });
+            }
+        })
+        .catch(err => {
+            res.status(500).json({ message: 'Failed to delete task.' });
+        });
+});
 
 module.exports = router;

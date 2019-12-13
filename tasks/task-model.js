@@ -3,7 +3,9 @@ const db = require('../data/db-config.js');
 module.exports = {
     getTasks,
     getTaskById,
-    addTask
+    addTask,
+    updateTask,
+    removeTask
 };
 
 // fetch all tasks
@@ -34,21 +36,23 @@ function addTask(task) {
         });
 }
 
-// function updateRecipe(changes, id) {
-//     return db('recipes')
-//         .where({ id })
-//         .update(changes)
-//         .then(count => {
-//             return getRecipeById(id);
-//         });
-// }
+// update a task
+function updateTask(changes, id) {
+    return db('tasks')
+        .where({ id })
+        .update(changes)
+        .then(count => {
+            return getTaskById(id);
+        });
+}
 
-// function removeRecipe(id) {
-//     const deletedRecipe = getRecipeById(id).then(item => item);
-//     return db('recipes')
-//         .where({ id })
-//         .del()
-//         .then(count => {
-//             return deletedRecipe
-//         });
-// }
+// delete a task
+function removeTask(id) {
+    const deletedTask = getTaskById(id).then(item => item);
+    return db('tasks')
+        .where({ id })
+        .del()
+        .then(count => {
+            return deletedTask
+        });
+}

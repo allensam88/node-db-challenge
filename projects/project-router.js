@@ -2,7 +2,7 @@ const express = require('express');
 const Projects = require('./project-model.js');
 const router = express.Router();
 
-// fetch all projects
+// GET - fetch all projects
 router.get('/', (req, res) => {
     Projects.getProjects()
         .then(projects => {
@@ -14,7 +14,7 @@ router.get('/', (req, res) => {
         });
 });
 
-// fetch single project by id
+// GET - fetch single project by id
 router.get('/:id', (req, res) => {
     const { id } = req.params;
     Projects.getProjectById(id)
@@ -36,7 +36,7 @@ router.get('/:id', (req, res) => {
         });
 });
 
-// fetch project tasks
+// GET - fetch project tasks
 router.get('/:id/tasks', (req, res) => {
     const { id } = req.params;
     Projects.getProjectTasks(id)
@@ -48,7 +48,7 @@ router.get('/:id/tasks', (req, res) => {
         });
 })
 
-// fetch project resources
+// GET - fetch project resources
 router.get('/:id/resources', (req, res) => {
     const { id } = req.params;
     Projects.getProjectResources(id)
@@ -60,7 +60,7 @@ router.get('/:id/resources', (req, res) => {
         });
 })
 
-// fetch complex project with tasks and resources
+// GET - fetch complex project with tasks and resources
 router.get('/:id/complex', (req, res) => {
     const { id } = req.params;
     Projects.getComplexProject(id)
@@ -72,8 +72,8 @@ router.get('/:id/complex', (req, res) => {
         });
 })
 
-// add a project
-router.post('/projects', (req, res) => {
+// POST - add a project
+router.post('/', (req, res) => {
     const projectData = req.body;
     Projects.addProject(projectData)
         .then(project => {
@@ -84,38 +84,40 @@ router.post('/projects', (req, res) => {
         });
 });
 
-// router.put('/:id', (req, res) => {
-//     const { id } = req.params;
-//     const changes = req.body;
-//     Recipes.getRecipeById(id)
-//         .then(recipe => {
-//             if (recipe) {
-//                 Recipes.updateRecipe(changes, id)
-//                     .then(updatedRecipe => {
-//                         res.status(202).json(updatedRecipe);
-//                     });
-//             } else {
-//                 res.status(404).json({ message: 'Could not find recipe with given id.' });
-//             }
-//         })
-//         .catch(err => {
-//             res.status(500).json({ message: 'Failed to update recipe.' });
-//         });
-// });
+//PUT - update a project
+router.put('/:id', (req, res) => {
+    const { id } = req.params;
+    const changes = req.body;
+    Projects.getProjectById(id)
+        .then(project => {
+            if (project) {
+                Projects.updateProject(changes, id)
+                    .then(updatedProject => {
+                        res.status(202).json(updatedProject);
+                    });
+            } else {
+                res.status(404).json({ message: 'Could not find project with given id.' });
+            }
+        })
+        .catch(err => {
+            res.status(500).json({ message: 'Failed to update project.' });
+        });
+});
 
-// router.delete('/:id', (req, res) => {
-//     const { id } = req.params;
-//     Recipes.removeRecipe(id)
-//         .then(deleted => {
-//             if (deleted) {
-//                 res.status(200).json({ removed: deleted });
-//             } else {
-//                 res.status(404).json({ message: 'Could not find recipe with given id.' });
-//             }
-//         })
-//         .catch(err => {
-//             res.status(500).json({ message: 'Failed to delete recipe.' });
-//         });
-// });
+// DELETE - remove a project
+router.delete('/:id', (req, res) => {
+    const { id } = req.params;
+    Projects.removeProject(id)
+        .then(deleted => {
+            if (deleted) {
+                res.status(200).json({ removed: deleted });
+            } else {
+                res.status(404).json({ message: 'Could not find project with given id.' });
+            }
+        })
+        .catch(err => {
+            res.status(500).json({ message: 'Failed to delete project.' });
+        });
+});
 
 module.exports = router;

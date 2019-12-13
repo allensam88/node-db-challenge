@@ -3,7 +3,9 @@ const db = require('../data/db-config.js');
 module.exports = {
     getResources,
     getResourceById,
-    addResource
+    addResource,
+    updateResource,
+    removeResource
 };
 
 // fetch all resources
@@ -28,21 +30,21 @@ function addResource(resource) {
         });
 }
 
-// function updateRecipe(changes, id) {
-//     return db('recipes')
-//         .where({ id })
-//         .update(changes)
-//         .then(count => {
-//             return getRecipeById(id);
-//         });
-// }
+function updateResource(changes, id) {
+    return db('resources')
+        .where({ id })
+        .update(changes)
+        .then(count => {
+            return getResourceById(id);
+        });
+}
 
-// function removeRecipe(id) {
-//     const deletedRecipe = getRecipeById(id).then(item => item);
-//     return db('recipes')
-//         .where({ id })
-//         .del()
-//         .then(count => {
-//             return deletedRecipe
-//         });
-// }
+function removeResource(id) {
+    const deletedResource = getResourceById(id).then(item => item);
+    return db('resources')
+        .where({ id })
+        .del()
+        .then(count => {
+            return deletedResource
+        });
+}
