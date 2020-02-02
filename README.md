@@ -40,11 +40,19 @@ Demonstrate your understanding of this week's concepts by answering the followin
 
 - [ ] Explain the difference between `Relational Databases` and `SQL`.
 
+A relational dB is a place where we can store information/data using different tables that can be linked together with unique keys.  Structured Query Language (SQL) is the language we use to access that information by writing specific, customized queries to look things up in the relational dB tables.
+
 - [ ] Why do tables need a `primary key`?
+
+Each row item in a table needs to have a unique id that is only valid for that particular thing.  This helps prevent any bugs with our data, such as duplications when trying to search, update, delete, etc.  If something in real life is represented in a table, I don’t want to have more than one thing in the data because it doesn’t reflect reality and it will be confusing to know which is correct/old.
 
 - [ ] What is the name given to a table column that references the primary key on another table.
 
+A foreign key is included on a table when there is a relationship to another table and it represents the id for that unique item on the other dependent reference table.  Foreign keys are utilized in One-to-Many relationships.
+
 - [ ] What do we need in order to have a _many to many_ relationship between two tables.
+
+A transactional table is used as an intermediary between a Many-to-Many relationship.  It will include foreign keys to reference both tables and it creates two pseudo One-to-Many relationships.  It’s also a good idea to add other columns to it with date/time stamps, such as checked_out, returned_at, updated_on, completed_on, etc…  It is like a library book being checked out by a patron.
 
 ## Minimum Viable Product
 
